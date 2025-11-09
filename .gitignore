@@ -130,8 +130,6 @@ dmypy.json
 
 # Project specific
 scrape_tracker.csv
-words_good.csv
-words_missing.csv
 
 # IDE
 .vscode/
