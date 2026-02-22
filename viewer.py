@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 import csv
 import random
 import os
@@ -15,6 +15,8 @@ app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'french_words_secret_key')
 app.config['ENV'] = os.getenv('FLASK_ENV', 'development')
 app.config['DEBUG'] = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin123')  # Default for development
 
 GOOD_CSV   = 'words_good.csv'
 MISSING_CSV = 'words_missing.csv'
@@ -96,6 +98,11 @@ def word_exists_in_db(word: str) -> bool:
             "SELECT 1 FROM words_good WHERE word = ? LIMIT 1", (word,)
         ).fetchone()
     return row is not None
+
+
+def check_admin_password(password: str) -> bool:
+    """Return True if the provided password matches the admin password."""
+    return password == ADMIN_PASSWORD
 
 def fetch_definition_from_api(word):
     """Fetch definition from Larousse (primary) or freedictionaryapi.com (fallback)."""
@@ -235,8 +242,6 @@ def get_definition(word):
 
     # 4. Fetch from external API
     definition, source = fetch_definition_from_api(word)
-    
-    print(f"Fetched definition for the word {word} from {source}")
 
     # 5. Persist result (including None, to avoid hammering the API again)
     #    Only updates the row that already exists; INSERT is never triggered here.
@@ -258,6 +263,181 @@ def get_definition(word):
 @app.route('/cards')
 def cards():
     return render_template('cards.html')
+
+
+# ── Admin Routes ──────────────────────────────────────────────────────────────
+
+@app.route('/api/admin/add-word', methods=['POST'])
+def add_word():
+    """Add a new word to the database. Requires admin password."""
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+    
+    password = data.get('password')
+    if not check_admin_password(password):
+        return jsonify({'error': 'Invalid password'}), 403
+    
+    word = data.get('word')
+    pos = data.get('pos')
+    gender_or_group = data.get('gender_or_group')
+    
+    if not word or not pos or not gender_or_group:
+        return jsonify({'error': 'Missing required fields: word, pos, gender_or_group'}), 400
+    
+    if not is_valid_word_param(word):
+        return jsonify({'error': 'Invalid word format'}), 400
+    
+    if word_exists_in_db(word):
+        return jsonify({'error': 'Word already exists'}), 409
+    
+    try:
+        with get_db() as conn:
+            conn.execute(
+                "INSERT INTO words_good (word, pos, gender_or_group) VALUES (?, ?, ?)",
+                (word, pos, gender_or_group)
+            )
+            conn.commit()
+        return jsonify({'message': 'Word added successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/update-word-type/<word>', methods=['PUT'])
+def update_word_type(word):
+    """Update the part of speech for a word. Requires admin password."""
+    if not is_valid_word_param(word):
+        return jsonify({'error': 'Invalid word'}), 400
+    
+    if not word_exists_in_db(word):
+        return jsonify({'error': 'Word not found'}), 404
+    
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+    
+    password = data.get('password')
+    if not check_admin_password(password):
+        return jsonify({'error': 'Invalid password'}), 403
+    
+    new_pos = data.get('pos')
+    if not new_pos:
+        return jsonify({'error': 'Missing pos field'}), 400
+    
+    try:
+        with get_db() as conn:
+            conn.execute(
+                "UPDATE words_good SET pos = ? WHERE word = ?",
+                (new_pos, word)
+            )
+            conn.commit()
+        return jsonify({'message': 'Word type updated successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/update-gender/<word>', methods=['PUT'])
+def update_gender(word):
+    """Update the gender/group for a word. Requires admin password."""
+    if not is_valid_word_param(word):
+        return jsonify({'error': 'Invalid word'}), 400
+    
+    if not word_exists_in_db(word):
+        return jsonify({'error': 'Word not found'}), 404
+    
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+    
+    password = data.get('password')
+    if not check_admin_password(password):
+        return jsonify({'error': 'Invalid password'}), 403
+    
+    new_gender = data.get('gender_or_group')
+    if not new_gender:
+        return jsonify({'error': 'Missing gender_or_group field'}), 400
+    
+    try:
+        with get_db() as conn:
+            conn.execute(
+                "UPDATE words_good SET gender_or_group = ? WHERE word = ?",
+                (new_gender, word)
+            )
+            conn.commit()
+        return jsonify({'message': 'Gender updated successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/update-definition/<word>', methods=['PUT'])
+def update_definition(word):
+    """Update the definition for a word. Requires admin password."""
+    if not is_valid_word_param(word):
+        return jsonify({'error': 'Invalid word'}), 400
+    
+    if not word_exists_in_db(word):
+        return jsonify({'error': 'Word not found'}), 404
+    
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+    
+    password = data.get('password')
+    if not check_admin_password(password):
+        return jsonify({'error': 'Invalid password'}), 403
+    
+    new_definition = data.get('definition')
+    source = data.get('source', 'manual')
+    
+    try:
+        with get_db() as conn:
+            conn.execute(
+                "UPDATE words_good SET definition = ?, definition_source = ? WHERE word = ?",
+                (new_definition, source, word)
+            )
+            conn.commit()
+        return jsonify({'message': 'Definition updated successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/admin/regenerate-card/<word>', methods=['PUT'])
+def regenerate_card(word):
+    """Regenerate the entire word card by updating all fields. Requires admin password."""
+    if not is_valid_word_param(word):
+        return jsonify({'error': 'Invalid word'}), 400
+    
+    if not word_exists_in_db(word):
+        return jsonify({'error': 'Word not found'}), 404
+    
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'No data provided'}), 400
+    
+    password = data.get('password')
+    if not check_admin_password(password):
+        return jsonify({'error': 'Invalid password'}), 403
+    
+    new_pos = data.get('pos')
+    new_gender = data.get('gender_or_group')
+    new_definition = data.get('definition')
+    source = data.get('source', 'manual')
+    
+    if not new_pos or not new_gender:
+        return jsonify({'error': 'Missing required fields: pos, gender_or_group'}), 400
+    
+    try:
+        with get_db() as conn:
+            conn.execute(
+                """UPDATE words_good 
+                   SET pos = ?, gender_or_group = ?, definition = ?, definition_source = ? 
+                   WHERE word = ?""",
+                (new_pos, new_gender, new_definition, source, word)
+            )
+            conn.commit()
+        return jsonify({'message': 'Card regenerated successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────

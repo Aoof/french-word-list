@@ -252,6 +252,279 @@
 
         .state-msg.error { color: #f87171; }
 
+        /*  Edit button  */
+        .btn-edit {
+            background: var(--surface);
+            color: var(--muted);
+            border: 1px solid var(--border);
+            padding: 13px 16px;
+            flex: 0 0 auto;
+        }
+
+        .btn-edit:hover {
+            color: var(--indigo);
+            border-color: var(--indigo);
+        }
+
+        .btn-add {
+            font-size: 0.78rem;
+            color: var(--muted);
+            background: none;
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.15s, border-color 0.15s;
+        }
+
+        .btn-add:hover { color: var(--indigo); border-color: var(--indigo); }
+
+        /*  Modals  */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-radius: var(--radius) var(--radius) 0 0;
+            width: 100%;
+            max-width: 560px;
+            padding: 24px 24px 32px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .modal-backdrop.open .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.15s;
+        }
+
+        .modal-close:hover { color: var(--text); }
+
+        .modal-word-label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-word-label strong {
+            color: var(--indigo);
+            font-size: 0.95rem;
+        }
+
+        .edit-section {
+            margin-bottom: 16px;
+        }
+
+        .edit-section-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .edit-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .edit-row select,
+        .edit-row input,
+        .edit-row textarea {
+            flex: 1;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.88rem;
+            font-family: inherit;
+            transition: border-color 0.15s;
+        }
+
+        .edit-row textarea {
+            resize: vertical;
+            min-height: 72px;
+        }
+
+        .edit-row select:focus,
+        .edit-row input:focus,
+        .edit-row textarea:focus {
+            outline: none;
+            border-color: var(--indigo);
+        }
+
+        .btn-sm {
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.15s;
+            white-space: nowrap;
+            flex: 0 0 auto;
+        }
+
+        .btn-sm:hover { opacity: 0.82; }
+
+        .btn-sm-indigo {
+            background: var(--indigo);
+            color: #fff;
+        }
+
+        .btn-sm-emerald {
+            background: var(--emerald);
+            color: #fff;
+        }
+
+        .btn-sm-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 16px 0;
+        }
+
+        /* ── Password prompt ── */
+        .pw-prompt-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s;
+        }
+
+        .pw-prompt-backdrop.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .pw-prompt {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            width: 300px;
+            max-width: calc(100vw - 32px);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transform: scale(0.94);
+            transition: transform 0.15s;
+        }
+
+        .pw-prompt-backdrop.open .pw-prompt {
+            transform: scale(1);
+        }
+
+        .pw-prompt-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .pw-prompt input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.88rem;
+            font-family: inherit;
+        }
+
+        .pw-prompt input:focus {
+            outline: none;
+            border-color: var(--indigo);
+        }
+
+        .pw-prompt-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(12px);
+            background: #1e2030;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.success { border-color: var(--emerald); color: var(--emerald); }
+        .toast.error   { border-color: #ef4444; color: #f87171; }
+
         /*  Mobile  */
         @media (max-width: 480px) {
             .card-scene { height: 300px; }
@@ -265,10 +538,16 @@
         <nav>
             <div class="nav-title">&#127467;&#127479; Flashcards</div>
             <span class="nav-count" id="countBadge">...</span>
-            <a href="/" class="btn-back">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
-                Home
-            </a>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <button class="btn-add" onclick="openAddModal()">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add word
+                </button>
+                <a href="/" class="btn-back">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
+                    Home
+                </a>
+            </div>
         </nav>
 
         <div id="stateMsg" class="state-msg">Loading&#8230;</div>
@@ -299,6 +578,9 @@
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
                     Flip
                 </button>
+                <button class="btn btn-edit" onclick="openEditModal()" title="Edit this card">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
                 <button class="btn btn-next" onclick="loadCard()">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     Next
@@ -307,78 +589,422 @@
         </div>
     </div>
 
-    <script>
-        let flipped = false;
+    <!-- Edit Card Modal -->
+    <div class="modal-backdrop" id="editBackdrop" onclick="closeEditModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">Edit Card</div>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-word-label">Editing: <strong id="editWordLabel"></strong></div>
 
+            <div class="edit-section">
+                <div class="edit-section-label">Word Type (POS)</div>
+                <div class="edit-row">
+                    <select id="editPos">
+                        <option value="">— keep current —</option>
+                        <option value="noun">Noun</option>
+                        <option value="verb">Verb</option>
+                        <option value="adjective">Adjective</option>
+                        <option value="adverb">Adverb</option>
+                        <option value="pronoun">Pronoun</option>
+                        <option value="preposition">Preposition</option>
+                        <option value="conjunction">Conjunction</option>
+                        <option value="interjection">Interjection</option>
+                        <option value="article">Article</option>
+                    </select>
+                    <button class="btn-sm btn-sm-indigo" onclick="doUpdatePos()">Save</button>
+                </div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Gender / Group</div>
+                <div class="edit-row">
+                    <select id="editGender">
+                        <option value="">— keep current —</option>
+                        <option value="masculine">Masculine</option>
+                        <option value="feminine">Feminine</option>
+                        <option value="1st group">1st Group</option>
+                        <option value="2nd group">2nd Group</option>
+                        <option value="3rd group">3rd Group</option>
+                    </select>
+                    <button class="btn-sm btn-sm-emerald" onclick="doUpdateGender()">Save</button>
+                </div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Definition</div>
+                <div class="edit-row" style="flex-direction:column;align-items:stretch;">
+                    <textarea id="editDefinition" placeholder="Enter new definition…"></textarea>
+                    <div style="display:flex;justify-content:flex-end;margin-top:4px;">
+                        <button class="btn-sm btn-sm-indigo" onclick="doUpdateDefinition()">Save Definition</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Regenerate Entire Card</div>
+                <div class="edit-row" style="flex-direction:column;align-items:stretch;gap:10px;">
+                    <div style="display:flex;gap:8px;">
+                        <select id="regenPos">
+                            <option value="">POS…</option>
+                            <option value="noun">Noun</option>
+                            <option value="verb">Verb</option>
+                            <option value="adjective">Adjective</option>
+                            <option value="adverb">Adverb</option>
+                            <option value="pronoun">Pronoun</option>
+                            <option value="preposition">Preposition</option>
+                            <option value="conjunction">Conjunction</option>
+                            <option value="interjection">Interjection</option>
+                            <option value="article">Article</option>
+                        </select>
+                        <select id="regenGender">
+                            <option value="">Gender…</option>
+                            <option value="masculine">Masculine</option>
+                            <option value="feminine">Feminine</option>
+                            <option value="1st group">1st Group</option>
+                            <option value="2nd group">2nd Group</option>
+                            <option value="3rd group">3rd Group</option>
+                        </select>
+                    </div>
+                    <textarea id="regenDefinition" placeholder="Definition (optional)…" style="min-height:60px;"></textarea>
+                    <div style="display:flex;justify-content:flex-end;">
+                        <button class="btn-sm btn-sm-danger" onclick="doRegenerate()">Regenerate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Word Modal -->
+    <div class="modal-backdrop" id="addBackdrop" onclick="closeAddModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">Add New Word</div>
+                <button class="modal-close" onclick="closeAddModal()">&times;</button>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Word</div>
+                <div class="edit-row">
+                    <input type="text" id="addWord" placeholder="e.g. bonjour">
+                </div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Part of Speech</div>
+                <div class="edit-row">
+                    <select id="addPos">
+                        <option value="">Select POS…</option>
+                        <option value="noun">Noun</option>
+                        <option value="verb">Verb</option>
+                        <option value="adjective">Adjective</option>
+                        <option value="adverb">Adverb</option>
+                        <option value="pronoun">Pronoun</option>
+                        <option value="preposition">Preposition</option>
+                        <option value="conjunction">Conjunction</option>
+                        <option value="interjection">Interjection</option>
+                        <option value="article">Article</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Gender / Group</div>
+                <div class="edit-row">
+                    <select id="addGender">
+                        <option value="">Select Gender / Group…</option>
+                        <option value="masculine">Masculine</option>
+                        <option value="feminine">Feminine</option>
+                        <option value="1st group">1st Group</option>
+                        <option value="2nd group">2nd Group</option>
+                        <option value="3rd group">3rd Group</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div style="display:flex;justify-content:flex-end;">
+                <button class="btn-sm btn-sm-indigo" onclick="doAddWord()">Add Word</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password prompt dialog -->
+    <div class="pw-prompt-backdrop" id="pwPromptBackdrop">
+        <div class="pw-prompt" onclick="event.stopPropagation()">
+            <div class="pw-prompt-title">Admin password required</div>
+            <input type="password" id="pwPromptInput" placeholder="Enter password…" autocomplete="current-password">
+            <div class="pw-prompt-actions">
+                <button class="btn-sm" style="background:var(--surface);color:var(--muted);border:1px solid var(--border);" onclick="closePwPrompt()">Cancel</button>
+                <button class="btn-sm btn-sm-indigo" onclick="confirmPwPrompt()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let flipped      = false;
+        let currentWord  = null;
+        let pendingAction = null;
+
+        // ── Toast ──────────────────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(msg, type = '') {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.className = 'toast' + (type ? ' ' + type : '') + ' show';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { el.className = 'toast'; }, 3000);
+        }
+
+        // ── Card flip ─────────────────────────────────────────────────────────
         function flipCard() {
-            document.getElementById("cardFlip").classList.toggle("flipped");
+            document.getElementById('cardFlip').classList.toggle('flipped');
             flipped = !flipped;
         }
 
         function resetFlip() {
             if (flipped) {
-                document.getElementById("cardFlip").classList.remove("flipped");
+                document.getElementById('cardFlip').classList.remove('flipped');
                 flipped = false;
             }
         }
 
+        // ── Load card ─────────────────────────────────────────────────────────
         async function loadCard() {
             resetFlip();
-            document.getElementById("stateMsg").style.display = "block";
-            document.getElementById("stateMsg").className = "state-msg";
-            document.getElementById("stateMsg").textContent = "Loading\u2026";
-            document.getElementById("cardArea").style.display = "none";
-            document.getElementById("defText").className = "definition-loading";
-            document.getElementById("defText").textContent = "Loading\u2026";
+            document.getElementById('stateMsg').style.display = 'block';
+            document.getElementById('stateMsg').className = 'state-msg';
+            document.getElementById('stateMsg').textContent = 'Loading\u2026';
+            document.getElementById('cardArea').style.display = 'none';
+            document.getElementById('defText').className = 'definition-loading';
+            document.getElementById('defText').textContent = 'Loading\u2026';
 
             try {
-                const res = await fetch("/api/random-card");
+                const res = await fetch('/api/random-card');
                 if (!res.ok) throw new Error();
                 const data = await res.json();
 
-                document.getElementById("wordFront").textContent = data.word;
-                document.getElementById("wordBack").textContent  = data.word;
-                document.getElementById("countBadge").textContent = data.total_cards + " cards";
+                currentWord = data.word;
 
-                document.getElementById("tags").innerHTML = `
+                document.getElementById('wordFront').textContent = data.word;
+                document.getElementById('wordBack').textContent  = data.word;
+                document.getElementById('countBadge').textContent = data.total_cards + ' cards';
+
+                document.getElementById('tags').innerHTML = `
                     <span class="tag tag-pos">${data.pos.label}</span>
                     <span class="tag tag-gender">${data.gender_or_group.icon} ${data.gender_or_group.label}</span>
                 `;
 
-                document.getElementById("stateMsg").style.display = "none";
-                document.getElementById("cardArea").style.display = "block";
+                document.getElementById('stateMsg').style.display = 'none';
+                document.getElementById('cardArea').style.display = 'block';
 
-                // Fetch definition asynchronously
                 fetchDefinition(data.word);
-
             } catch {
-                document.getElementById("stateMsg").className = "state-msg error";
-                document.getElementById("stateMsg").textContent = "Failed to load card. Please try again.";
+                document.getElementById('stateMsg').className = 'state-msg error';
+                document.getElementById('stateMsg').textContent = 'Failed to load card. Please try again.';
             }
         }
 
         async function fetchDefinition(word) {
             try {
-                const res = await fetch("/api/definition/" + encodeURIComponent(word));
+                const res  = await fetch('/api/definition/' + encodeURIComponent(word));
                 const data = await res.json();
-                const el = document.getElementById("defText");
+                const el   = document.getElementById('defText');
                 if (data.definition) {
-                    el.className = "definition-text";
+                    el.className   = 'definition-text';
                     el.textContent = data.definition;
                 } else {
-                    el.className = "definition-empty";
-                    el.textContent = "No definition found.";
+                    el.className   = 'definition-empty';
+                    el.textContent = 'No definition found.';
                 }
             } catch {
-                document.getElementById("defText").className = "definition-empty";
-                document.getElementById("defText").textContent = "Could not fetch definition.";
+                const el = document.getElementById('defText');
+                el.className   = 'definition-empty';
+                el.textContent = 'Could not fetch definition.';
             }
         }
 
-        // Keyboard shortcuts
-        document.addEventListener("keydown", e => {
-            if (e.key === " " || e.key === "Enter") { e.preventDefault(); flipCard(); }
-            else if (e.key === "ArrowRight" || e.key.toLowerCase() === "n") { e.preventDefault(); loadCard(); }
+        // ── Password prompt ──────────────────────────────────────────────────
+        function promptPassword(callback) {
+            pendingAction = callback;
+            document.getElementById('pwPromptInput').value = '';
+            document.getElementById('pwPromptBackdrop').classList.add('open');
+            setTimeout(() => document.getElementById('pwPromptInput').focus(), 80);
+        }
+
+        function closePwPrompt() {
+            pendingAction = null;
+            document.getElementById('pwPromptBackdrop').classList.remove('open');
+        }
+
+        async function confirmPwPrompt() {
+            const pw = document.getElementById('pwPromptInput').value;
+            if (!pw) { document.getElementById('pwPromptInput').focus(); return; }
+            document.getElementById('pwPromptBackdrop').classList.remove('open');
+            if (pendingAction) await pendingAction(pw);
+            pendingAction = null;
+        }
+
+        // ── Edit modal ────────────────────────────────────────────────────────
+        function openEditModal() {
+            if (!currentWord) return;
+            document.getElementById('editWordLabel').textContent = currentWord;
+            const defEl = document.getElementById('defText');
+            if (defEl.className === 'definition-text') {
+                document.getElementById('editDefinition').value = defEl.textContent;
+                document.getElementById('regenDefinition').value = defEl.textContent;
+            } else {
+                document.getElementById('editDefinition').value = '';
+                document.getElementById('regenDefinition').value = '';
+            }
+            document.getElementById('editBackdrop').classList.add('open');
+        }
+
+        function closeEditModal(e) {
+            if (e && e.target !== document.getElementById('editBackdrop')) return;
+            document.getElementById('editBackdrop').classList.remove('open');
+        }
+
+        async function adminPut(url, body) {
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            return res;
+        }
+
+        async function doUpdatePos() {
+            const pos = document.getElementById('editPos').value;
+            if (!pos) { showToast('Select a word type first', 'error'); return; }
+            promptPassword(async (pw) => {
+                const res  = await adminPut(`/api/admin/update-word-type/${encodeURIComponent(currentWord)}`, { pos, password: pw });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast('Word type updated', 'success');
+                document.getElementById('editPos').value = '';
+                reloadCardInPlace();
+            });
+        }
+
+        async function doUpdateGender() {
+            const gender = document.getElementById('editGender').value;
+            if (!gender) { showToast('Select a gender/group first', 'error'); return; }
+            promptPassword(async (pw) => {
+                const res  = await adminPut(`/api/admin/update-gender/${encodeURIComponent(currentWord)}`, { gender_or_group: gender, password: pw });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast('Gender updated', 'success');
+                document.getElementById('editGender').value = '';
+                reloadCardInPlace();
+            });
+        }
+
+        async function doUpdateDefinition() {
+            const definition = document.getElementById('editDefinition').value.trim();
+            if (!definition) { showToast('Enter a definition first', 'error'); return; }
+            promptPassword(async (pw) => {
+                const res  = await adminPut(`/api/admin/update-definition/${encodeURIComponent(currentWord)}`, { definition, source: 'manual', password: pw });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast('Definition updated', 'success');
+                const el = document.getElementById('defText');
+                el.className   = 'definition-text';
+                el.textContent = definition;
+            });
+        }
+
+        async function doRegenerate() {
+            const pos        = document.getElementById('regenPos').value;
+            const gender     = document.getElementById('regenGender').value;
+            const definition = document.getElementById('regenDefinition').value.trim();
+            if (!pos)    { showToast('Select a word type', 'error'); return; }
+            if (!gender) { showToast('Select a gender/group', 'error'); return; }
+            promptPassword(async (pw) => {
+                const res  = await fetch(`/api/admin/regenerate-card/${encodeURIComponent(currentWord)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pos, gender_or_group: gender, definition: definition || null, source: 'manual', password: pw })
+                });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast('Card regenerated', 'success');
+                document.getElementById('editBackdrop').classList.remove('open');
+                reloadCardInPlace();
+            });
+        }
+
+        // Reload the current word's data without switching to a new card
+        async function reloadCardInPlace() {
+            const word = currentWord;
+            try {
+                const res  = await fetch('/api/random-card'); // fallback: just reload same word from tags
+                // Re-fetch definition to reflect latest
+                fetchDefinition(word);
+            } catch {}
+        }
+
+        // ── Add word modal ────────────────────────────────────────────────────
+        function openAddModal() {
+            ['addWord','addPos','addGender'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('addBackdrop').classList.add('open');
+        }
+
+        function closeAddModal(e) {
+            if (e && e.target !== document.getElementById('addBackdrop')) return;
+            document.getElementById('addBackdrop').classList.remove('open');
+        }
+
+        async function doAddWord() {
+            const word   = document.getElementById('addWord').value.trim();
+            const pos    = document.getElementById('addPos').value;
+            const gender = document.getElementById('addGender').value;
+            if (!word)   { showToast('Enter a word', 'error'); return; }
+            if (!pos)    { showToast('Select a word type', 'error'); return; }
+            if (!gender) { showToast('Select a gender/group', 'error'); return; }
+            promptPassword(async (pw) => {
+                const res  = await fetch('/api/admin/add-word', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ word, pos, gender_or_group: gender, password: pw })
+                });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast(`"${word}" added`, 'success');
+                document.getElementById('addBackdrop').classList.remove('open');
+                const badge = document.getElementById('countBadge');
+                const count = parseInt(badge.textContent) + 1;
+                badge.textContent = count + ' cards';
+            });
+        }
+
+        // Submit password prompt on Enter / dismiss on Escape
+        document.getElementById('pwPromptInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter')  { e.preventDefault(); confirmPwPrompt(); }
+            if (e.key === 'Escape') { e.preventDefault(); closePwPrompt(); }
+        });
+
+        // ── Keyboard shortcuts ────────────────────────────────────────────────
+        document.addEventListener('keydown', e => {
+            // Don't intercept when typing in a modal input
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+            if (e.key === 'Escape') {
+                closePwPrompt();
+                document.getElementById('editBackdrop').classList.remove('open');
+                document.getElementById('addBackdrop').classList.remove('open');
+            }
+            if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+            else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'n') { e.preventDefault(); loadCard(); }
+            else if (e.key.toLowerCase() === 'e') { e.preventDefault(); openEditModal(); }
         });
 
         loadCard();
