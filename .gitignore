@@ -130,7 +130,10 @@ dmypy.json
 
 # Project specific
 scrape_tracker.csv
+words.db
 
 # IDE
 .vscode/
 .idea/
+
+**.db
