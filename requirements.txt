@@ -1,7 +1,7 @@
+# Direct dependencies for the French word list project
+beautifulsoup4==4.14.3
 Flask==3.1.2
-Jinja2==3.1.6
-Werkzeug==3.1.3
 gunicorn==21.2.0
+larousse-api-sunbro==0.0.5
 python-dotenv==1.0.0
 requests==2.32.3
-larousse-api-sunbro==0.0.1
