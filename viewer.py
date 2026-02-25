@@ -50,6 +50,10 @@ def init_db():
                 word TEXT    NOT NULL UNIQUE,
                 pos  TEXT    NOT NULL
             );
+
+            -- Case-insensitive index lets prefix LIKE queries avoid full scans
+            CREATE INDEX IF NOT EXISTS idx_words_good_word_ci
+                ON words_good (word COLLATE NOCASE);
         """)
 
         # Import words_good.csv
@@ -158,6 +162,7 @@ def get_gender_info(gender):
         '1st group': {'label': '1st Group', 'icon': '①'},
         '2nd group': {'label': '2nd Group', 'icon': '②'},
         '3rd group': {'label': '3rd Group', 'icon': '③'},
+        'unknown':   {'label': 'Unknown',   'icon': '?'},
     }
     return gender_info.get(gender.lower(), {'label': gender.title(), 'icon': '•'})
 
@@ -167,13 +172,16 @@ def get_gender_info(gender):
 @app.route('/')
 def index():
     with get_db() as conn:
+        good_count    = conn.execute("SELECT COUNT(*) FROM words_good").fetchone()[0]
+        missing_count = conn.execute("SELECT COUNT(*) FROM words_missing").fetchone()[0]
         good    = [dict(r) for r in conn.execute(
-            "SELECT word, pos, gender_or_group FROM words_good ORDER BY word"
+            "SELECT word, pos, gender_or_group FROM words_good ORDER BY word LIMIT 100"
         ).fetchall()]
         missing = [dict(r) for r in conn.execute(
-            "SELECT word, pos FROM words_missing ORDER BY word"
+            "SELECT word, pos FROM words_missing ORDER BY word LIMIT 100"
         ).fetchall()]
-    return render_template('index.html', good=good, missing=missing)
+    return render_template('index.html', good=good, missing=missing,
+                           good_count=good_count, missing_count=missing_count)
 
 
 @app.route('/api/random-card')
@@ -183,8 +191,12 @@ def random_card():
         total = conn.execute("SELECT COUNT(*) FROM words_good").fetchone()[0]
         if not total:
             return jsonify({'error': 'No cards available'}), 404
+        # LIMIT 1 OFFSET random_int is O(log n) via the index;
+        # ORDER BY RANDOM() forces a full-table sort.
+        offset = random.randint(0, total - 1)
         row = conn.execute(
-            "SELECT word, pos, gender_or_group FROM words_good ORDER BY RANDOM() LIMIT 1"
+            "SELECT word, pos, gender_or_group FROM words_good LIMIT 1 OFFSET ?",
+            (offset,)
         ).fetchone()
 
     card        = dict(row)
@@ -221,18 +233,17 @@ def get_definition(word):
     if not is_valid_word_param(word):
         return jsonify({'error': 'Invalid word'}), 400
 
-    # 2. Only serve/store definitions for words we actually imported
-    if not word_exists_in_db(word):
-        return jsonify({'error': 'Word not found'}), 404
-
-    # 3. Return cached definition if we already have one
+    # 2. Check cache and confirm word exists in a single round-trip
     with get_db() as conn:
         row = conn.execute(
             "SELECT definition, definition_source FROM words_good WHERE word = ?",
             (word,)
         ).fetchone()
 
-    if row and row['definition']:
+    if row is None:
+        return jsonify({'error': 'Word not found'}), 404
+
+    if row['definition']:
         return jsonify({
             'word':       word,
             'definition': row['definition'],
@@ -265,6 +276,39 @@ def cards():
     return render_template('cards.html')
 
 
+@app.route('/api/search')
+def search_words():
+    """Search words_good by prefix. Uses the word COLLATE NOCASE index."""
+    q = request.args.get('q', '').strip()
+    if not q:
+        return jsonify({'results': []})
+    if not is_valid_word_param(q):
+        return jsonify({'error': 'Invalid query'}), 400
+
+    with get_db() as conn:
+        rows = conn.execute(
+            """SELECT word, pos, gender_or_group, definition
+               FROM words_good
+               WHERE word LIKE ? COLLATE NOCASE
+               ORDER BY word
+               LIMIT 20""",
+            (q + '%',)
+        ).fetchall()
+
+    results = []
+    for r in rows:
+        gender_info = get_gender_info(r['gender_or_group'])
+        results.append({
+            'word':            r['word'],
+            'pos':             r['pos'].title(),
+            'gender_or_group': gender_info['label'],
+            'gender_icon':     gender_info['icon'],
+            'definition':      r['definition'],
+        })
+
+    return jsonify({'results': results})
+
+
 # ── Admin Routes ──────────────────────────────────────────────────────────────
 
 @app.route('/api/admin/add-word', methods=['POST'])
@@ -288,9 +332,6 @@ def add_word():
     if not is_valid_word_param(word):
         return jsonify({'error': 'Invalid word format'}), 400
     
-    if word_exists_in_db(word):
-        return jsonify({'error': 'Word already exists'}), 409
-    
     try:
         with get_db() as conn:
             conn.execute(
@@ -299,6 +340,8 @@ def add_word():
             )
             conn.commit()
         return jsonify({'message': 'Word added successfully'}), 201
+    except sqlite3.IntegrityError:
+        return jsonify({'error': 'Word already exists'}), 409
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -308,29 +351,28 @@ def update_word_type(word):
     """Update the part of speech for a word. Requires admin password."""
     if not is_valid_word_param(word):
         return jsonify({'error': 'Invalid word'}), 400
-    
-    if not word_exists_in_db(word):
-        return jsonify({'error': 'Word not found'}), 404
-    
+
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'}), 400
-    
+
     password = data.get('password')
     if not check_admin_password(password):
         return jsonify({'error': 'Invalid password'}), 403
-    
+
     new_pos = data.get('pos')
     if not new_pos:
         return jsonify({'error': 'Missing pos field'}), 400
-    
+
     try:
         with get_db() as conn:
-            conn.execute(
+            cur = conn.execute(
                 "UPDATE words_good SET pos = ? WHERE word = ?",
                 (new_pos, word)
             )
             conn.commit()
+        if cur.rowcount == 0:
+            return jsonify({'error': 'Word not found'}), 404
         return jsonify({'message': 'Word type updated successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -341,29 +383,28 @@ def update_gender(word):
     """Update the gender/group for a word. Requires admin password."""
     if not is_valid_word_param(word):
         return jsonify({'error': 'Invalid word'}), 400
-    
-    if not word_exists_in_db(word):
-        return jsonify({'error': 'Word not found'}), 404
-    
+
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'}), 400
-    
+
     password = data.get('password')
     if not check_admin_password(password):
         return jsonify({'error': 'Invalid password'}), 403
-    
+
     new_gender = data.get('gender_or_group')
     if not new_gender:
         return jsonify({'error': 'Missing gender_or_group field'}), 400
-    
+
     try:
         with get_db() as conn:
-            conn.execute(
+            cur = conn.execute(
                 "UPDATE words_good SET gender_or_group = ? WHERE word = ?",
                 (new_gender, word)
             )
             conn.commit()
+        if cur.rowcount == 0:
+            return jsonify({'error': 'Word not found'}), 404
         return jsonify({'message': 'Gender updated successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -374,28 +415,27 @@ def update_definition(word):
     """Update the definition for a word. Requires admin password."""
     if not is_valid_word_param(word):
         return jsonify({'error': 'Invalid word'}), 400
-    
-    if not word_exists_in_db(word):
-        return jsonify({'error': 'Word not found'}), 404
-    
+
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'}), 400
-    
+
     password = data.get('password')
     if not check_admin_password(password):
         return jsonify({'error': 'Invalid password'}), 403
-    
+
     new_definition = data.get('definition')
     source = data.get('source', 'manual')
-    
+
     try:
         with get_db() as conn:
-            conn.execute(
+            cur = conn.execute(
                 "UPDATE words_good SET definition = ?, definition_source = ? WHERE word = ?",
                 (new_definition, source, word)
             )
             conn.commit()
+        if cur.rowcount == 0:
+            return jsonify({'error': 'Word not found'}), 404
         return jsonify({'message': 'Definition updated successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -406,35 +446,34 @@ def regenerate_card(word):
     """Regenerate the entire word card by updating all fields. Requires admin password."""
     if not is_valid_word_param(word):
         return jsonify({'error': 'Invalid word'}), 400
-    
-    if not word_exists_in_db(word):
-        return jsonify({'error': 'Word not found'}), 404
-    
+
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'}), 400
-    
+
     password = data.get('password')
     if not check_admin_password(password):
         return jsonify({'error': 'Invalid password'}), 403
-    
+
     new_pos = data.get('pos')
     new_gender = data.get('gender_or_group')
     new_definition = data.get('definition')
     source = data.get('source', 'manual')
-    
+
     if not new_pos or not new_gender:
         return jsonify({'error': 'Missing required fields: pos, gender_or_group'}), 400
-    
+
     try:
         with get_db() as conn:
-            conn.execute(
-                """UPDATE words_good 
-                   SET pos = ?, gender_or_group = ?, definition = ?, definition_source = ? 
+            cur = conn.execute(
+                """UPDATE words_good
+                   SET pos = ?, gender_or_group = ?, definition = ?, definition_source = ?
                    WHERE word = ?""",
                 (new_pos, new_gender, new_definition, source, word)
             )
             conn.commit()
+        if cur.rowcount == 0:
+            return jsonify({'error': 'Word not found'}), 404
         return jsonify({'message': 'Card regenerated successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500

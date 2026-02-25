@@ -234,6 +234,336 @@
             text-align: center;
         }
 
+        /* ── Search ── */
+        .search-wrap {
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.15s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--indigo);
+        }
+
+        .search-input::placeholder { color: var(--muted); }
+
+        .search-results {
+            margin-top: 8px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .search-results.visible { display: block; }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 16px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.1s;
+        }
+
+        .search-result-item:last-child { border-bottom: none; }
+        .search-result-item:hover { background: rgba(99,102,241,0.07); }
+
+        .search-result-word {
+            font-weight: 600;
+            flex: 0 0 auto;
+            min-width: 120px;
+        }
+
+        .search-result-meta {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .search-result-def {
+            font-size: 0.82rem;
+            color: var(--muted);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-empty {
+            padding: 20px 16px;
+            color: var(--muted);
+            font-size: 0.88rem;
+            text-align: center;
+        }
+
+        /* ── Search result clickable ── */
+        .search-result-item {
+            cursor: pointer;
+        }
+
+        .search-result-item .edit-hint {
+            font-size: 0.75rem;
+            color: var(--muted);
+            flex: 0 0 auto;
+            opacity: 0;
+            transition: opacity 0.1s;
+        }
+
+        .search-result-item:hover .edit-hint {
+            opacity: 1;
+        }
+
+        /* ── Modals ── */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-radius: var(--radius) var(--radius) 0 0;
+            width: 100%;
+            max-width: 560px;
+            padding: 24px 24px 32px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .modal-backdrop.open .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            padding: 4px;
+            transition: color 0.15s;
+        }
+
+        .modal-close:hover { color: var(--text); }
+
+        .modal-word-label {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-word-label strong {
+            color: var(--indigo);
+            font-size: 0.95rem;
+        }
+
+        .edit-section {
+            margin-bottom: 16px;
+        }
+
+        .edit-section-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .edit-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .edit-row select,
+        .edit-row input,
+        .edit-row textarea {
+            flex: 1;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.88rem;
+            font-family: inherit;
+            transition: border-color 0.15s;
+        }
+
+        .edit-row textarea {
+            resize: vertical;
+            min-height: 72px;
+        }
+
+        .edit-row select:focus,
+        .edit-row input:focus,
+        .edit-row textarea:focus {
+            outline: none;
+            border-color: var(--indigo);
+        }
+
+        .btn-sm {
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.15s;
+            white-space: nowrap;
+            flex: 0 0 auto;
+        }
+
+        .btn-sm:hover { opacity: 0.82; }
+
+        .btn-sm-indigo  { background: var(--indigo);  color: #fff; }
+        .btn-sm-emerald { background: var(--emerald); color: #fff; }
+        .btn-sm-danger  { background: #ef4444;        color: #fff; }
+
+        .modal-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 16px 0;
+        }
+
+        /* ── Password prompt ── */
+        .pw-prompt-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s;
+        }
+
+        .pw-prompt-backdrop.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .pw-prompt {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            width: 300px;
+            max-width: calc(100vw - 32px);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            transform: scale(0.94);
+            transition: transform 0.15s;
+        }
+
+        .pw-prompt-backdrop.open .pw-prompt {
+            transform: scale(1);
+        }
+
+        .pw-prompt-title { font-weight: 600; font-size: 0.95rem; }
+
+        .pw-prompt input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.88rem;
+            font-family: inherit;
+        }
+
+        .pw-prompt input:focus { outline: none; border-color: var(--indigo); }
+
+        .pw-prompt-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(12px);
+            background: #1e2030;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s, transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { border-color: var(--emerald); color: var(--emerald); }
+        .toast.error   { border-color: #ef4444; color: #f87171; }
+
         /* ── Mobile ── */
         @media (max-width: 600px) {
             header h1 { font-size: 1.4rem; }
@@ -255,12 +585,12 @@
         <div class="stats">
             <div class="stat-card complete">
                 <div class="label">Complete</div>
-                <div class="number">{{ good|length }}</div>
+                <div class="number">{{ good_count }}</div>
                 <div class="sub">entries with full data</div>
             </div>
             <div class="stat-card incomplete">
                 <div class="label">Incomplete</div>
-                <div class="number">{{ missing|length }}</div>
+                <div class="number">{{ missing_count }}</div>
                 <div class="sub">entries missing data</div>
             </div>
         </div>
@@ -270,6 +600,21 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
                 Start flashcards
             </a>
+        </div>
+
+        <div class="search-wrap">
+            <div class="search-box">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input
+                    type="search"
+                    class="search-input"
+                    id="searchInput"
+                    placeholder="Search words…"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+            </div>
+            <div class="search-results" id="searchResults"></div>
         </div>
 
         <div class="section-title">Complete entries</div>
@@ -283,7 +628,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for row in good[:100] %}
+                    {% for row in good %}
                     <tr>
                         <td class="word-cell">{{ row.word }}</td>
                         <td><span class="badge">{{ row.pos }}</span></td>
@@ -292,8 +637,8 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if good|length > 100 %}
-            <div class="table-note">Showing first 100 of {{ good|length }} entries</div>
+            {% if good_count > 100 %}
+            <div class="table-note">Showing first 100 of {{ good_count }} entries</div>
             {% endif %}
         </div>
 
@@ -308,7 +653,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for row in missing[:100] %}
+                    {% for row in missing %}
                     <tr>
                         <td class="word-cell">{{ row.word }}</td>
                         <td><span class="badge">{{ row.pos }}</span></td>
@@ -316,8 +661,8 @@
                     {% endfor %}
                 </tbody>
             </table>
-            {% if missing|length > 100 %}
-            <div class="table-note">Showing first 100 of {{ missing|length }} entries</div>
+            {% if missing_count > 100 %}
+            <div class="table-note">Showing first 100 of {{ missing_count }} entries</div>
             {% endif %}
         </div>
         {% endif %}
@@ -348,6 +693,7 @@
                             <option value="1st group">1st Group</option>
                             <option value="2nd group">2nd Group</option>
                             <option value="3rd group">3rd Group</option>
+                            <option value="unknown">Unknown</option>
                         </select>
                         <input type="password" id="adminPassword" placeholder="Admin Password" required>
                         <button type="submit" class="btn-primary">Add Word</button>
@@ -377,6 +723,7 @@
                             <option value="1st group">1st Group</option>
                             <option value="2nd group">2nd Group</option>
                             <option value="3rd group">3rd Group</option>
+                            <option value="unknown">Unknown</option>
                         </select>
                         <input type="text" id="updateDefinition" placeholder="Definition (leave empty to skip)">
                         <input type="password" id="updatePassword" placeholder="Admin Password" required>
@@ -387,7 +734,191 @@
         </div>
     </div>
 
+    <!-- Edit Word Modal -->
+    <div class="modal-backdrop" id="editBackdrop" onclick="closeEditModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">Edit Word</div>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-word-label">Editing: <strong id="editWordLabel"></strong></div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Word Type (POS)</div>
+                <div class="edit-row">
+                    <select id="editPos">
+                        <option value="">— keep current —</option>
+                        <option value="noun">Noun</option>
+                        <option value="verb">Verb</option>
+                        <option value="adjective">Adjective</option>
+                        <option value="adverb">Adverb</option>
+                        <option value="pronoun">Pronoun</option>
+                        <option value="preposition">Preposition</option>
+                        <option value="conjunction">Conjunction</option>
+                        <option value="interjection">Interjection</option>
+                        <option value="article">Article</option>
+                    </select>
+                    <button class="btn-sm btn-sm-indigo" onclick="doUpdatePos()">Save</button>
+                </div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Gender / Group</div>
+                <div class="edit-row">
+                    <select id="editGender">
+                        <option value="">— keep current —</option>
+                        <option value="masculine">Masculine</option>
+                        <option value="feminine">Feminine</option>
+                        <option value="1st group">1st Group</option>
+                        <option value="2nd group">2nd Group</option>
+                        <option value="3rd group">3rd Group</option>
+                        <option value="unknown group">Unknown</option>
+                    </select>
+                    <button class="btn-sm btn-sm-emerald" onclick="doUpdateGender()">Save</button>
+                </div>
+            </div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Definition</div>
+                <div class="edit-row" style="flex-direction:column;align-items:stretch;">
+                    <textarea id="editDefinition" placeholder="Enter new definition…"></textarea>
+                    <div style="display:flex;justify-content:flex-end;margin-top:4px;">
+                        <button class="btn-sm btn-sm-indigo" onclick="doUpdateDefinition()">Save Definition</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-divider"></div>
+
+            <div class="edit-section">
+                <div class="edit-section-label">Regenerate Entire Card</div>
+                <div class="edit-row" style="flex-direction:column;align-items:stretch;gap:10px;">
+                    <div style="display:flex;gap:8px;">
+                        <select id="regenPos">
+                            <option value="">POS…</option>
+                            <option value="noun">Noun</option>
+                            <option value="verb">Verb</option>
+                            <option value="adjective">Adjective</option>
+                            <option value="adverb">Adverb</option>
+                            <option value="pronoun">Pronoun</option>
+                            <option value="preposition">Preposition</option>
+                            <option value="conjunction">Conjunction</option>
+                            <option value="interjection">Interjection</option>
+                            <option value="article">Article</option>
+                        </select>
+                        <select id="regenGender">
+                            <option value="">Gender…</option>
+                            <option value="masculine">Masculine</option>
+                            <option value="feminine">Feminine</option>
+                            <option value="1st group">1st Group</option>
+                            <option value="2nd group">2nd Group</option>
+                            <option value="3rd group">3rd Group</option>
+                            <option value="unknown">Unknown</option>
+                        </select>
+                    </div>
+                    <textarea id="regenDefinition" placeholder="Definition (optional)…" style="min-height:60px;"></textarea>
+                    <div style="display:flex;justify-content:flex-end;">
+                        <button class="btn-sm btn-sm-danger" onclick="doRegenerate()">Regenerate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password prompt -->
+    <div class="pw-prompt-backdrop" id="pwPromptBackdrop">
+        <div class="pw-prompt" onclick="event.stopPropagation()">
+            <div class="pw-prompt-title">Admin password required</div>
+            <input type="password" id="pwPromptInput" placeholder="Enter password…" autocomplete="current-password">
+            <div class="pw-prompt-actions">
+                <button class="btn-sm" style="background:var(--surface);color:var(--muted);border:1px solid var(--border);" onclick="closePwPrompt()">Cancel</button>
+                <button class="btn-sm btn-sm-indigo" onclick="confirmPwPrompt()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
     <script>
+        // ── Search ──────────────────────────────────────────────────────────────
+        let searchTimer;
+        let searchAbort = null;   // AbortController for in-flight requests
+        let lastSearchQ = null;   // deduplicate identical queries
+
+        document.getElementById('searchInput').addEventListener('input', function () {
+            clearTimeout(searchTimer);
+            const q = this.value.trim();
+            if (!q) {
+                hideSearchResults();
+                return;
+            }
+            searchTimer = setTimeout(() => doSearch(q), 220);
+        });
+
+        document.getElementById('searchInput').addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { this.value = ''; hideSearchResults(); lastSearchQ = null; }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.search-wrap')) { hideSearchResults(); lastSearchQ = null; }
+        });
+
+        // Click on a search result → open edit modal
+        document.getElementById('searchResults').addEventListener('click', function (e) {
+            const item = e.target.closest('.search-result-item');
+            if (!item) return;
+            openEditModal(item.dataset.word);
+        });
+
+        function hideSearchResults() {
+            const el = document.getElementById('searchResults');
+            el.classList.remove('visible');
+            // Keep innerHTML so re-focus shows stale results instantly;
+            // it gets replaced when the next fetch completes.
+        }
+
+        async function doSearch(q) {
+            if (q === lastSearchQ) return;  // skip duplicate
+            lastSearchQ = q;
+
+            // Cancel any in-flight request
+            if (searchAbort) searchAbort.abort();
+            searchAbort = new AbortController();
+
+            const el = document.getElementById('searchResults');
+            try {
+                const res  = await fetch('/api/search?q=' + encodeURIComponent(q),
+                                        { signal: searchAbort.signal });
+                const data = await res.json();
+                if (data.error) { el.innerHTML = `<div class="search-empty">${data.error}</div>`; el.classList.add('visible'); return; }
+
+                if (!data.results.length) {
+                    el.innerHTML = `<div class="search-empty">No results for "${escHtml(q)}"</div>`;
+                } else {
+                    el.innerHTML = data.results.map(r => `
+                        <div class="search-result-item" data-word="${escHtml(r.word)}">
+                            <span class="search-result-word">${escHtml(r.word)}</span>
+                            <span class="search-result-meta">
+                                <span class="badge">${escHtml(r.pos)}</span>
+                                <span class="badge badge-emerald">${escHtml(r.gender_icon)} ${escHtml(r.gender_or_group)}</span>
+                            </span>
+                            <span class="search-result-def">${r.definition ? escHtml(r.definition) : '<em>no definition</em>'}</span>
+                            <span class="edit-hint">✎ edit</span>
+                        </div>`).join('');
+                }
+                el.classList.add('visible');
+            } catch (e) {
+                if (e.name === 'AbortError') return;  // superseded by newer query
+                el.innerHTML = '<div class="search-empty">Search failed.</div>';
+                el.classList.add('visible');
+            }
+        }
+
+        function escHtml(str) {
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
         document.getElementById('addWordForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const word = document.getElementById('newWord').value;
@@ -447,6 +978,135 @@
                 }
             } catch (err) {
                 alert('Update failed: ' + err.message);
+            }
+        });
+
+        // ── Toast ────────────────────────────────────────────────────────────
+        let toastTimer;
+        function showToast(msg, type = '') {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.className = 'toast' + (type ? ' ' + type : '') + ' show';
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { el.className = 'toast'; }, 3000);
+        }
+
+        // ── Password prompt ──────────────────────────────────────────────────
+        let pendingAction = null;
+
+        function promptPassword(callback) {
+            pendingAction = callback;
+            document.getElementById('pwPromptInput').value = '';
+            document.getElementById('pwPromptBackdrop').classList.add('open');
+            setTimeout(() => document.getElementById('pwPromptInput').focus(), 80);
+        }
+
+        function closePwPrompt() {
+            pendingAction = null;
+            document.getElementById('pwPromptBackdrop').classList.remove('open');
+        }
+
+        async function confirmPwPrompt() {
+            const pw = document.getElementById('pwPromptInput').value;
+            if (!pw) { document.getElementById('pwPromptInput').focus(); return; }
+            document.getElementById('pwPromptBackdrop').classList.remove('open');
+            if (pendingAction) await pendingAction(pw);
+            pendingAction = null;
+        }
+
+        document.getElementById('pwPromptInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter')  { e.preventDefault(); confirmPwPrompt(); }
+            if (e.key === 'Escape') { e.preventDefault(); closePwPrompt(); }
+        });
+
+        // ── Edit modal ───────────────────────────────────────────────────────
+        let currentWord = null;
+
+        function openEditModal(word) {
+            currentWord = word;
+            document.getElementById('editWordLabel').textContent = word;
+            document.getElementById('editPos').value = '';
+            document.getElementById('editGender').value = '';
+            document.getElementById('editDefinition').value = '';
+            document.getElementById('regenPos').value = '';
+            document.getElementById('regenGender').value = '';
+            document.getElementById('regenDefinition').value = '';
+            document.getElementById('editBackdrop').classList.add('open');
+        }
+
+        function closeEditModal(e) {
+            if (e && e.target !== document.getElementById('editBackdrop')) return;
+            document.getElementById('editBackdrop').classList.remove('open');
+        }
+
+        async function adminPut(url, body) {
+            const res = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            return res;
+        }
+
+        async function doUpdatePos() {
+            const pos = document.getElementById('editPos').value;
+            if (!pos) { showToast('Select a word type first', 'error'); return; }
+            promptPassword(async (pw) => {
+                const res  = await adminPut(`/api/admin/update-word-type/${encodeURIComponent(currentWord)}`, { pos, password: pw });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast('Word type updated', 'success');
+                document.getElementById('editPos').value = '';
+            });
+        }
+
+        async function doUpdateGender() {
+            const gender = document.getElementById('editGender').value;
+            if (!gender) { showToast('Select a gender/group first', 'error'); return; }
+            promptPassword(async (pw) => {
+                const res  = await adminPut(`/api/admin/update-gender/${encodeURIComponent(currentWord)}`, { gender_or_group: gender, password: pw });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast('Gender updated', 'success');
+                document.getElementById('editGender').value = '';
+            });
+        }
+
+        async function doUpdateDefinition() {
+            const definition = document.getElementById('editDefinition').value.trim();
+            if (!definition) { showToast('Enter a definition first', 'error'); return; }
+            promptPassword(async (pw) => {
+                const res  = await adminPut(`/api/admin/update-definition/${encodeURIComponent(currentWord)}`, { definition, source: 'manual', password: pw });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast('Definition updated', 'success');
+            });
+        }
+
+        async function doRegenerate() {
+            const pos        = document.getElementById('regenPos').value;
+            const gender     = document.getElementById('regenGender').value;
+            const definition = document.getElementById('regenDefinition').value.trim();
+            if (!pos)    { showToast('Select a word type', 'error'); return; }
+            if (!gender) { showToast('Select a gender/group', 'error'); return; }
+            promptPassword(async (pw) => {
+                const res  = await fetch(`/api/admin/regenerate-card/${encodeURIComponent(currentWord)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pos, gender_or_group: gender, definition: definition || null, source: 'manual', password: pw })
+                });
+                const data = await res.json();
+                if (!res.ok) { showToast(data.error, 'error'); return; }
+                showToast('Card regenerated', 'success');
+                document.getElementById('editBackdrop').classList.remove('open');
+            });
+        }
+
+        // Escape closes edit modal
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                closePwPrompt();
+                document.getElementById('editBackdrop').classList.remove('open');
             }
         });
     </script>
